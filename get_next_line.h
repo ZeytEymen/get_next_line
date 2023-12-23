@@ -6,7 +6,7 @@
 /*   By: ekarabud <ekarabud@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/21 18:00:58 by ekarabud          #+#    #+#             */
-/*   Updated: 2023/12/21 18:07:28 by ekarabud         ###   ########.fr       */
+/*   Updated: 2023/12/23 20:58:29 by ekarabud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,10 @@
 # include <stdlib.h>
 
 char	*ft_strchr(const char *s, int c);
-char	*ft_strjoin(char const *s1, char const *s2);
+char	*ft_strjoin(char *s1, char *s2);
 size_t	ft_strlen(const char *s);
+char	*ft_strdup(const char *s1);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*get_next_line(int fd);
 
 # ifndef BUFFER_SIZE
