@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "get_next_line.h"
+#include <strings.h>
 
 
 size_t	ft_strlen(const char *s)
@@ -28,6 +29,16 @@ char	*ft_strchr(const char *s, int c)
 	if ((char)c == '\0')
 		return ((char *)&s[i]);
 	return (0);
+}
+void	*ft_calloc(size_t count, size_t size)
+{
+	void	*buffer;
+
+	buffer = (void *)malloc(count * size);
+	if (buffer == NULL)
+		return (NULL);
+	bzero(buffer, count * size);
+	return (buffer);
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)
@@ -59,15 +70,18 @@ char	*ft_strjoin(char const *s1, char const *s2)
 }
 
 
-char    *read_line(int fd, char *str)
+char    *ft_read_line(int fd, char *str)
 {
-    char *temp;
-    size_t readen_bytes;
+    char 	*temp;
+    size_t 	readen_bytes;
 
+	readen_bytes = 1;
+	if (str == 0)	
+		str = ft_calloc(1,sizeof(char));
     temp = malloc(sizeof(char) * (BUFFER_SIZE + 1));
     if (!temp)
         return (0);
-    while (!ft_strchr(temp,'\n'))
+    while (readen_bytes > 0)
     {
         readen_bytes = read(fd,temp,BUFFER_SIZE);
         if (readen_bytes == -1)
@@ -76,32 +90,41 @@ char    *read_line(int fd, char *str)
             return (0);
         }
         temp[readen_bytes] = '\0';
-        str = ft_strjoin(str,temp);
+		str = ft_strjoin(str,temp);
+		if (ft_strchr(temp,'\n'))
+			break;
     }
-    free(temp);
-    
+	free(temp);
     return (str);
+}
+
+char *ft_write_line(char *str)
+{
+	int i = 0;
+	char *temp;
+	char *temp2;
+	temp = malloc(sizeof(char) * ft_strlen(str) + 1);
+	while (str[i] && str[i] != '\n')
+	{
+		temp[i] = str[i];
+		i++;
+	}
+	temp[i]= '\0';
+	return (strdup(temp));
 }
 
 char	*get_next_line(int fd)
 {
-    return (0);
+	static char *str;
+	str = ft_read_line(fd,str);
+    return (str);
 }
+
 
 int main()
 {
-    char *str;
     int fd = open("metin.txt", O_RDONLY);
-    read_line(fd,str);
-    printf("%s",str);
-    // int fd = open("metin.txt", O_RDONLY);
-    // char str[100];
-    // size_t readenBytes = read(fd,str,100);
-    // printf("%s\n",str);
-    // readenBytes = read(fd,str,100);
-    // printf("%s\n",str);
-    // readenBytes = read(fd,str,100);
-    // printf("%s",str);
-    // printf("\n%zu",readenBytes);
-
+	printf("%s\n", get_next_line(fd));
+	system("leaks a.out");
 }
+
